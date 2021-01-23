@@ -1,0 +1,19 @@
+---
+title: "Rachel Rhodes"
+image: "rachel_peru.jpg"
+links:
+  - label: LinkedIn
+    url: "https://linkedin.com/"
+  - label: Twitter
+    url: "https://twitter.com/"
+  - label: GitHub
+    url: "https://github.com/"
+  - label: Email
+    url: "mailto:email@email.com"
+output:
+  postcards::jolla
+site: distill::distill_website
+---
+ 
+Rachel was discovered floating on a mat of giant kelp in the Santa Barbara channel with no memory of how she got there or where she came from—the only things that were certain were her strong connection to the ocean, her desire to protect it, and a strict filter feeding diet of plankton. She is a trained environmental scientist, finishing her degree at UC Santa Barbara's Bren School of Environmental Science & Management.
+
