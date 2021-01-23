@@ -1,15 +1,13 @@
 ---
 title: "Rachel Rhodes"
-image: "rachel_peru.jpg"
+image: "rachel.png"
 links:
   - label: LinkedIn
-    url: "https://linkedin.com/"
-  - label: Twitter
-    url: "https://twitter.com/"
+    url: "https://linkedin.com/in/rhodesrachel/"
   - label: GitHub
-    url: "https://github.com/"
+    url: "https://github.com/ramrhodes"
   - label: Email
-    url: "mailto:email@email.com"
+    url: "mailto:rachrhodes@.gmail.com"
 output:
   postcards::jolla
 site: distill::distill_website
