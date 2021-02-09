@@ -4,7 +4,6 @@ description: |
   Well hey there all you cool cats and kittens, welcome to my very first blog post
 author:
   - name: Rachel Rhodes
-preview: https://github.com/ramrhodes/rachel-website/blob/master/images/bigtuna.png
 date: 01-23-2021
 output:
   distill::distill_article:
