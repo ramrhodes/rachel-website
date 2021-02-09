@@ -13,7 +13,7 @@ output:
 Some sample figures to how this show up: 
 
 
-```{r, echo = FALSE, layout="l-body-outset", preview=TRUE}
+```{r, echo = FALSE, layout="l-body-outset"}
 library(ggplot2)
 ggplot(diamonds, aes(carat, price)) + geom_smooth() +
   facet_grid(~ cut)
