@@ -1,1 +1,19 @@
-[]
+[
+  {
+    "path": "posts/2021-01-23-welcome/",
+    "title": "Welcome",
+    "description": "Well hey there all you cool cats and kittens, welcome to my very first blog post",
+    "author": [
+      {
+        "name": "Rachel Rhodes",
+        "url": {}
+      }
+    ],
+    "date": "2021-01-23",
+    "categories": [],
+    "contents": "\n\n\n\n\n\n```{.r .distill-force-highlighting-css}\n\n\n",
+    "preview": {},
+    "last_modified": "2021-02-08T21:09:19-08:00",
+    "input_file": {}
+  }
+]
