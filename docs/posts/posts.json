@@ -11,9 +11,9 @@
     ],
     "date": "2021-01-23",
     "categories": [],
-    "contents": "\n\n\n\n\n\n```{.r .distill-force-highlighting-css}\n\n\n",
-    "preview": {},
-    "last_modified": "2021-02-08T21:09:19-08:00",
-    "input_file": {}
+    "contents": "\nSome sample figures to how this show up:\n\n\n\n\n\n\n",
+    "preview": "https://github.com/ramrhodes/rachel-website/blob/master/images/bigtuna.png",
+    "last_modified": "2021-02-09T14:37:29-08:00",
+    "input_file": "welcome.utf8.md"
   }
 ]
