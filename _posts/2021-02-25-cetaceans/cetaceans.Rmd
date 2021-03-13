@@ -5,7 +5,10 @@ description: |
 author:
   - name: Rachel Rhodes
     url: {}
-date: 2021-02-25
+date: 2021-02-22
+categories:
+  - geospatial data
+  - marine 
 output:
   distill::distill_article:
     self_contained: false

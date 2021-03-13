@@ -6,9 +6,9 @@ output_dir: "docs"
 theme: postcards.css
 navbar:
   right:
-    - text: "Home"
-      href: index.html
     - text: "About"
+      href: index.html
+    - text: "Resume"
       href: resume.html
     - text: "Projects"
       href: blog.html

@@ -2134,11 +2134,11 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     --aside-size:      12px;
     --fig-cap-size:    13px;
     /*-- Main font colors --*/
-    --title-color:     rgba(0, 0, 0, 0.8);;
+    --title-color:     rgba(0, 0, 0, 0.8);
     --header-color:    #a14a16;
     --body-color:      rgba(0, 0, 0, 0.8);
     --aside-color:     rgba(0, 0, 0, 0.6);
-    --fig-cap-color:   rgba(0, 0, 0, 0.6);
+    --fig-cap-color:   #a14a16;
     /*-- Specify custom fonts ~~~ must be imported above   --*/
     --heading-font:    'Arsenal', sans-serif;
     --mono-font:       "DM Mono", monospace;
@@ -2175,7 +2175,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     --title-size:       18px;    
     --text-color:       #f2ece9; /* edited */
     --text-size:        15px;
-    --hover-color:      #fcce62; /* edited */
+    --hover-color:      #d4c2ba; /* edited */
     --bkgd-color:       #62838D; /* edited */
   }
   
@@ -2374,8 +2374,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <input id="distill-search" class="nav-search hidden" type="text" placeholder="Search..."/>
 </div>
 <div class="nav-right">
-<a href="index.html">Home</a>
-<a href="resume.html">About</a>
+<a href="index.html">About</a>
+<a href="resume.html">Resume</a>
 <a href="blog.html">Projects</a>
 <a href="javascript:void(0);" class="nav-toggle">&#9776;</a>
 </div>
@@ -2516,45 +2516,11 @@ function init_posts_list() {
 
 
 
-<div class="posts-container posts-apply-limit l-page">
+<div class="posts-container posts-with-sidebar posts-apply-limit l-screen-inset">
 <div class="posts-list">
 <h1 class="posts-list-caption" data-caption="Projects">Projects</h1>
-<a href="posts/2021-03-13-binary-logistic-regerssion/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">March 13, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">Rachel Rhodes</div>
-</div>
-</div>
-<div class="thumbnail">
-<img src="posts/2021-03-13-binary-logistic-regerssion/binary-logistic-regerssion_files/figure-html5/unnamed-chunk-1-1.png"/>
-</div>
-<div class="description">
-<h2>Binary Logistic Regeression</h2>
-<div class="dt-tags"></div>
-<p>Binarg logistic regression analysis of Palmetto Species</p>
-</div>
-</a>
-<a href="posts/2021-03-13-oil-spills/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">March 13, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">Rachel Rhodes</div>
-</div>
-</div>
-<div class="thumbnail">
-<img src="posts/2021-03-13-oil-spills/oil-spills_files/figure-html5/unnamed-chunk-4-1.png"/>
-</div>
-<div class="description">
-<h2>Oil Spills</h2>
-<div class="dt-tags"></div>
-<p>Working with spatial data to create a map of California oil spills</p>
-</div>
-</a>
 <a href="posts/2021-03-13-wild-fish/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
+<script class="post-metadata" type="text/json">{"categories":["statistics","marine"]}</script>
 <div class="metadata">
 <div class="publishedDate">March 4, 2021</div>
 <div class="dt-authors">
@@ -2566,29 +2532,15 @@ function init_posts_list() {
 </div>
 <div class="description">
 <h2>Global Wild Fish Catch</h2>
-<div class="dt-tags"></div>
+<div class="dt-tags">
+<div class="dt-tag">statistics</div>
+<div class="dt-tag">marine</div>
+</div>
 <p>Exploring estimating parameters using global wild fish catch data</p>
 </div>
 </a>
-<a href="posts/2021-02-25-cetaceans/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Feb. 25, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">Rachel Rhodes</div>
-</div>
-</div>
-<div class="thumbnail">
-<img src="posts/2021-02-25-cetaceans/cetaceans_files/figure-html5/unnamed-chunk-1-1.png"/>
-</div>
-<div class="description">
-<h2>Cetaceans in the California Bight</h2>
-<div class="dt-tags"></div>
-<p>A brief analysis using species distribution models from Aquamaps.</p>
-</div>
-</a>
 <a href="posts/2021-02-25-gndproject/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
+<script class="post-metadata" type="text/json">{"categories":["text analysis"]}</script>
 <div class="metadata">
 <div class="publishedDate">Feb. 25, 2021</div>
 <div class="dt-authors">
@@ -2600,10 +2552,98 @@ function init_posts_list() {
 </div>
 <div class="description">
 <h2>Green New Deal</h2>
-<div class="dt-tags"></div>
-<p>A text analysis of Green New Deals.</p>
+<div class="dt-tags">
+<div class="dt-tag">text analysis</div>
+</div>
+<p>A text analysis of Green New Deals</p>
 </div>
 </a>
+<a href="posts/2021-02-25-cetaceans/" class="post-preview">
+<script class="post-metadata" type="text/json">{"categories":["geospatial data","marine"]}</script>
+<div class="metadata">
+<div class="publishedDate">Feb. 22, 2021</div>
+<div class="dt-authors">
+<div class="dt-author">Rachel Rhodes</div>
+</div>
+</div>
+<div class="thumbnail">
+<img src="posts/2021-02-25-cetaceans/cetaceans_files/figure-html5/unnamed-chunk-1-1.png"/>
+</div>
+<div class="description">
+<h2>Cetaceans in the California Bight</h2>
+<div class="dt-tags">
+<div class="dt-tag">geospatial data</div>
+<div class="dt-tag">marine</div>
+</div>
+<p>A brief analysis using species distribution models from Aquamaps.</p>
+</div>
+</a>
+<a href="posts/2021-03-13-oil-spills/" class="post-preview">
+<script class="post-metadata" type="text/json">{"categories":["geospatial data","marine"]}</script>
+<div class="metadata">
+<div class="publishedDate">Feb. 20, 2021</div>
+<div class="dt-authors">
+<div class="dt-author">Rachel Rhodes</div>
+</div>
+</div>
+<div class="thumbnail">
+<img src="posts/2021-03-13-oil-spills/oil-spills_files/figure-html5/unnamed-chunk-4-1.png"/>
+</div>
+<div class="description">
+<h2>Oil Spills</h2>
+<div class="dt-tags">
+<div class="dt-tag">geospatial data</div>
+<div class="dt-tag">marine</div>
+</div>
+<p>Working with spatial data to create a map of California oil spills</p>
+</div>
+</a>
+<a href="posts/2021-03-13-binary-logistic-regerssion/" class="post-preview">
+<script class="post-metadata" type="text/json">{"categories":["statistics"]}</script>
+<div class="metadata">
+<div class="publishedDate">Feb. 6, 2021</div>
+<div class="dt-authors">
+<div class="dt-author">Rachel Rhodes</div>
+</div>
+</div>
+<div class="thumbnail">
+<img src="posts/2021-03-13-binary-logistic-regerssion/binary-logistic-regerssion_files/figure-html5/unnamed-chunk-1-1.png"/>
+</div>
+<div class="description">
+<h2>Binary Logistic Regeression</h2>
+<div class="dt-tags">
+<div class="dt-tag">statistics</div>
+</div>
+<p>Binarg logistic regression analysis of Palmetto Species</p>
+</div>
+</a>
+</div>
+<div class="posts-sidebar">
+<div class="sidebar-section categories">
+<h3>Categories</h3>
+<ul>
+<li>
+<a href="#category:articles">articles</a>
+<span class="category-count">(5)</span>
+</li>
+<li>
+<a href="#category:geospatial_data">geospatial data</a>
+<span class="category-count">(2)</span>
+</li>
+<li>
+<a href="#category:marine">marine</a>
+<span class="category-count">(3)</span>
+</li>
+<li>
+<a href="#category:statistics">statistics</a>
+<span class="category-count">(2)</span>
+</li>
+<li>
+<a href="#category:text_analysis">text analysis</a>
+<span class="category-count">(1)</span>
+</li>
+</ul>
+</div>
 </div>
 <div class="posts-more">
 <a href="#">More articles &raquo;</a>

@@ -5,6 +5,8 @@ description: |
 author:
   - name: Rachel Rhodes
 date: 2021-02-25
+categories:
+  - text analysis
 output:
   distill::distill_article:
     self_contained: false

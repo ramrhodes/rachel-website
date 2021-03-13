@@ -6,6 +6,9 @@ author:
   - name: Rachel Rhodes
     url: {}
 date: 2021-03-4
+categories:
+  - statistics
+  - marine
 output:
   distill::distill_article:
     self_contained: false

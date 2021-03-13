@@ -5,7 +5,9 @@ description: |
 author:
   - name: Rachel Rhodes
     url: {}
-date: 2021-03-13
+date: 2021-02-06
+categories:
+  - statistics
 output:
   distill::distill_article:
     self_contained: false
@@ -111,6 +113,7 @@ palmetto_blr_tidy
 
 
 **Table 1:** Binary logistic regression model results for the log odds of a plant being *Serenoa repens* using predictor variables: plant height (cm), canopy length(cm), canopy width (cm), and number of new green leaves. 
+
 ```{r}
 palmetto_table <- palmetto_blr %>% 
   broom::tidy() %>% 
