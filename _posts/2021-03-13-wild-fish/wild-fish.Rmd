@@ -1,0 +1,202 @@
+---
+title: "Global Wild Fish Catch"
+description: |
+  Exploring estimating parameters using global wild fish catch data
+author:
+  - name: Rachel Rhodes
+    url: {}
+date: 2021-03-4
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+library(tidyverse)
+library(here)
+library(janitor)
+library(broom)
+library(nlstools)
+library(gt)
+```
+
+The following analysis explores using nonlinear least squares to find parameter estimates of the increase in global wild fish catch from 1950 - 2012 using data from U.N. Food and Agricultural Organization.  
+
+![Photo from Pixabay](fish.jpg)
+
+**Data Citation** Global wild fish catch and aquaculture production, compiled by Earth Policy Institute with 1950-2010 from U.N. Food and Agriculture Organization (FAO), Global Capture Production and Global Aquaculture Production, electronic databases, at www.fao.org/fishery/topic/16140/en.
+
+---
+
+## Data Wrangling
+
+#### Data Cleanup
+Read in and clean up data:
+```{r}
+fish <- read_csv("fish_catch.csv") %>% 
+  clean_names() %>% 
+  rename(year = world_wild_fish_catch_and_farmed_fish_production_1950_2012, 
+        wild = x2,
+        farmed_fish = x3,
+        total_fish = x4) %>% 
+  slice(5:67)%>% 
+  mutate(time = 0:62) %>% 
+  mutate_if(is.character, as.numeric)  %>% 
+  select(year, wild, time)
+```
+
+---
+
+#### Visual Exploration
+Now, let's graph this to explore the relationship between wild catch over time. 
+
+
+```{r}
+ggplot(data = fish, aes(x = time, y = wild)) +
+  geom_point() +
+  theme_minimal()+
+  labs(x = "time(years)", y = "wild catch (millions of tonnes)")
+```
+
+
+We can see in the figure the shape sort of looks like a **logistic growth model**, which means the per capita growth rate gets smaller as the catch size approaches the carrying capacity ($K$). 
+
+This is mathematically expressed as:
+
+$P(t)=\frac{K}{1+Ae^{-rt}}$ 
+
+where $K$ is the carrying capacity, $A$ is $\frac{K-P_0}{P_0}$ and $r$ is the growth rate constant.
+
+---
+
+## Nonlinear Least Squares Model
+
+To find the parameters for a logistic growth equation we will use nonlinear leas squares (NLS) to find parameter estimates that minimizes the sum of squares of residuals using the common iterative algorithm Guass-Newtown to do this. There are a few  steps we will do to create this model. 
+
+
+#### Step 1. Find the initial estimates for parameters
+
+To find the inital parameters for a logistic growth equation ($r$. $K$, $A$) first lets find an initial estimate for growth rate constant ($r$):
+
+$P(t)=\frac{K}{1+Ae^{-rt}}$ 
+
+To estimate $r$ during the exponential growth phase, lets look at time < 35 since beyond 35 the curve starts to level off. We can then take the natural log and find the slope of log-transformed exponential growth phase to give us an estimate for $r$. 
+
+Filter data to observations between year 0 and 35 and take the natural log:
+
+```{r}
+fish_exp <- fish %>% 
+  filter(time < 35) %>% 
+  mutate(ln_catch = log(wild))
+```
+
+To get the estimate for $r$, we then find the slope of the linear equation:
+
+```{r}
+lm_k <- lm(ln_catch ~ time, data = fish_exp)
+
+lm_k
+
+# coefficient is ~0.04
+```
+
+ased on our linear model, our initial estimate for $r$ is 0.04. Looking at the graph, we can determine our initial estimate for $K$ is ~85 and an initial estimate for $A$ using is $\frac{K-P_0}{P_0}$ which is ~ 4. 
+
+Now that we have these we will use them as starting points in an iterative algorithm to converge on parameter estimates.  
+
+---
+
+#### Step 2. Create nonlinear least squares (NLS) model
+
+To create the NLS model:
+
+```{r}
+fish_nls <- nls(wild ~ K/(1+ A*exp(-r*time)),
+                data = fish,
+                start = list(K = 85, A = 4, r = 0.04),
+                trace = TRUE
+                )
+```
+
+Let's put the output of the model into a table:
+
+```{r}
+fish_output <- broom::tidy(fish_nls)
+
+fish_output %>% 
+  gt() %>% 
+  fmt_number(
+    columns = vars(estimate, std.error, statistic),
+    decimals = 2
+  ) %>% 
+  tab_footnote(
+    footnote = "Units in millions of tonnes",
+    locations = cells_body(
+      columns = vars(term),
+      rows = 1:2)
+  )
+```
+
+
+---
+
+### Step 3. Make predictions
+
+We can use the estimated parameters to make predictions. Our model with estimated parameters is:
+$$P(t) = \frac{100}{1+4.316e^{-0.07t}}$$
+
+
+Now, we can create predictions for the wild catch over the same time periods & calculate the confidence interval:
+
+```{r}
+# make predictions 
+fish_predict <- predict(fish_nls)
+
+# create data frame that includes both the original data frame and the new predictions
+fish_complete <- data.frame(fish, fish_predict)
+
+# find confidence intervals
+fish_ci <- confint2(fish_nls)
+
+fish_ci
+```
+
+---
+
+#### Step 4. Create graphs and tables of outputs
+
+The graph below shows the original data and the predictions from our model output:
+
+```{r}
+ggplot(data = fish_complete, aes(x = time, y = wild)) +
+  geom_point() +
+  geom_line(aes(x = time, y = fish_predict)) +
+  theme_minimal() +
+  labs(title = "Increase in global wild fish catch from 1950 - 2012", 
+       x = "time",
+       y = "wild fish catch (millions of tonnes)")
+```
+
+
+We can also create a table that shows our predictions:
+
+```{r}
+fish_complete %>% 
+  select(year, wild, fish_predict) %>% 
+  gt() %>% 
+  tab_header(
+    title = "Global Wild Fish Catch 1950 - 2012", subtitle = "Comparison of actual and predicted fish catch in millions of tonnes") %>%
+  fmt_number(
+    columns = vars(wild, fish_predict),
+    decimals = 0
+  ) %>% 
+  cols_label(
+    year = "Year",
+    wild = "Actual Wild Catch",
+    fish_predict = "Predicted Wild Catch"
+  ) 
+  
+```

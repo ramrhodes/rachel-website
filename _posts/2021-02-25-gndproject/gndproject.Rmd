@@ -1,7 +1,7 @@
 ---
 title: "Green New Deal"
 description: |
-  A text analysis of Green New Deals.
+  A text analysis of Green New Deals
 author:
   - name: Rachel Rhodes
 date: 2021-02-25
@@ -11,8 +11,8 @@ output:
 ---
 
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(tidytext)
 library(textdata)
@@ -20,9 +20,12 @@ library(pdftools)
 library(ggwordcloud)
 library(pals)
 ```
-
+# Green New Deal Overview {.tabset}
 The Green New Deal (GND) is a congressional resolution that focuses on addressing climate change and economic inequality by building a green economy, inclusive of all people, through a fair and just transition. Since the Green New Deal was introduced by Representative Alexandria Ocasio-Cortez of New York and Senator Edward J. Markey of Massachusetts, state and local governments have created their own New Deal policies. The following analysis explores of the most frequently used words in various Green New Deals, comparing the federal resolution with state-level Green New Deals from California and Maine. 
 
+![Photo Credit: New York Times](gnd.jpg)
+
+---
 #### Links to original text 
 
 **National GND:** The federal Green New Deal is a 14 page document from February 7, 2019. The original document can be found [here](https://www.congress.gov/116/bills/hres109/BILLS-116hres109ih.pdf)
@@ -33,52 +36,230 @@ The Green New Deal (GND) is a congressional resolution that focuses on addressin
 
 ---
 
-First, lets compare how robust and lengthy each document is by comparing the overall word count.
+## Word Count
 
-Some quick takeaways from Figure 1:
+First, lets compare how robust and lengthy each document is by comparing the overall word count. 
 
-The Federal legislation has the largest word count
-Maine legislation has far less words in their GND than California and the National GND
+Some quick takeaways from Figure 1: 
+
+* The Federal legislation has the largest word count
+* Maine legislation has far less words in their GND than California and the National GND
+
 
 ```{r}
-knitr::include_graphics("images/gnd_word.png")
+### Step 1. Read in and clean up federal data set
+federal_deal <- pdf_text("federal_green.pdf")
+
+# Next lets unnest and get each work into its own row
+federal_tidy <- data.frame(federal_deal) %>% 
+  mutate(text_full = str_split(federal_deal, pattern = "\\n")) %>% 
+  unnest(text_full) %>% 
+  mutate(text_full = str_trim(text_full)) %>% 
+  unnest_tokens(word, text_full)
+
+### Step 2. Read in and cleanup data from California:
+ca_deal <- pdf_text("ca_gnd_original.pdf")
+
+# Next lets unnest and get each work into its own row
+ca_tidy <- data.frame(ca_deal) %>% 
+  mutate(text_full = str_split(ca_deal, pattern = "\\n")) %>% 
+  unnest(text_full) %>% 
+  mutate(text_full = str_trim(text_full)) %>% 
+  unnest_tokens(word, text_full)
+
+### Step 3. Read in and cleanup data from Maine:
+maine_deal <- pdf_text("main_green.pdf")
+
+# Next lets unnest and get each work into its own row
+maine_tidy <- data.frame(maine_deal) %>% 
+  mutate(text_full = str_split(maine_deal, pattern = "\\n")) %>% 
+  unnest(text_full) %>% 
+  mutate(text_full = str_trim(text_full)) %>% 
+  unnest_tokens(word, text_full)
+
+
+### Step 4. Let's create a combined data frame of all three and plot it:
+ca_prep <- ca_tidy %>% 
+  mutate(from = "California") %>% 
+  select("word", "from")
+
+fed_prep <- federal_tidy %>% 
+  mutate(from = "National") %>% 
+  select("word", "from")
+
+maine_prep <- maine_tidy %>% 
+  mutate(from = "Maine") %>% 
+  select("word", "from")
+
+all_words <- rbind(ca_prep, fed_prep, maine_prep)
+
+# get a word count grouping by type (California, Federal or Maine)
+all_count <- all_words %>% 
+  count(from)
+
+# create a visualization
+ggplot(data = all_count, aes(x = from, y = n)) +
+  geom_col(fill=c("deepskyblue4","green4","goldenrod2")) +
+  labs(x = "Green New Deal", y = "total word count", title = "Overall word count for Green New Deal legislation") +
+  theme_minimal()
+
 ```
+
+
 **Figure 1.** Total word count for Green New Deal legislation for California, National, and Maine. 
 
-Next, let’s compare the most used words in each document. To do this, we must remove the common and less interesting words like the, and, of, etc. for each document. 
 
-```{r}
-knitr::include_graphics("images/national.png")
-```
-**Figure 2.** Wordcloud of the most used words in the National Green New Deal.
 
-```{r}
-knitr::include_graphics("images/california.png")
-```
-**Figure 3.** Wordcloud of the most used words in the California Green New Deal.
+## Most Used Words
 
-```{r}
-knitr::include_graphics("images/maine.png")
+Next, let's compare the most used words in each document. To do this, we must remove the common and less interesting words like the, and, of, etc. for each document. 
+
+To do this we must first remove stop words:
+
+```{r, message=FALSE, warning=FALSE}
+### Step 1. Remove stop words  from Federal
+
+# let's check our overall word count
+fed_deal_wordcount <- federal_tidy %>% 
+  count(word) %>% 
+  arrange(-n)
+
+fed_rm_nonstop <- federal_tidy %>% 
+  anti_join(stop_words)
+
+fed_count_rm_nonstop <- fed_rm_nonstop %>% 
+  count(word) %>% 
+  arrange(-n) %>% 
+  mutate(word_2 = as.numeric(word)) %>% 
+  filter(is.na(word_2)) %>% 
+  select(word, n) %>% 
+  slice(1:50)
+
+
+### Step 2. Remove stop words from California
+
+# let's check our overall word count
+ca_deal_wordcount <- ca_tidy %>% 
+  count(word) %>% 
+  arrange(-n)
+
+ca_rm_nonstop <- ca_tidy %>% 
+  anti_join(stop_words)
+
+ca_count_rm_nonstop <- ca_rm_nonstop %>% 
+  count(word) %>% 
+  arrange(-n) %>% 
+  slice(1:50)
+
+
+### Step 3. Remove stop words  from Maine
+
+#let's check our overall word count
+maine_deal_wordcount <- maine_tidy %>% 
+  count(word) %>% 
+  arrange(-n)
+
+maine_rm_nonstop <- maine_tidy %>% 
+  anti_join(stop_words)
+
+maine_count_rm_nonstop <- maine_rm_nonstop %>% 
+  count(word) %>% 
+  arrange(-n) %>% 
+  slice(1:50)
 ```
-**Figure 4.** Wordcloud of the most used words in the Maine Green New Deal.
+
+
+Then we can create wordclouds to explore the most used words. The most used word in each document are the brightest and largest words shown in the cloud.
 
 Some interesting takeaways:
 
-* MaineGND uses more words like “construction”, “power”, “school”, “facility”
-* California GND uses more words like “public”, “climate”, “green”
-* The National GND uses more words like “bills”, “united”, “communities”
+* MaineGND uses more words like "construction", "power", "school", "facility"
+* California GND uses more words like "public", "climate", "green"
+* The National GND uses more words like "bills", "united", "communities"
+
+#### National
+```{r}
+ggplot(data = fed_count_rm_nonstop, aes(label=word)) +
+  geom_text_wordcloud(aes(color = n, size = n)) +
+  scale_size_area(max_size = 6) +
+  scale_color_gradient(low = "green4", high = "green1")
+
+```
 
 
-Now, let’s look at the overall sentiments found in each document using the AFINN lexicon. The AFINN sentiment lexicon is a lit of terms that has been manually rated between -5 and +5 with negative scored indicating negative sentiments (anger, sadness, etc.) and positive scores indicating positive sentiments (joy, happy, etc.).
-
-Overall, we can see that Maine has far less words associated with negative sentiments (Figure 5). If we looked at the average sentiment score/value for each Green New Deal, we can see that overall Maine has the highest average sentiment score, followed by California (Figure 6).
+#### California
 
 ```{r}
-knitr::include_graphics("images/sentiment.png")
+ggplot(data = ca_count_rm_nonstop, aes(label=word)) +
+  geom_text_wordcloud(aes(color = n, size = n)) +
+  scale_size_area(max_size = 6) +
+  scale_color_gradient(low = "deepskyblue4", high = "deepskyblue1")
+
 ```
-**Figure 5.** Overall sentiment of words found in the Green New Deals for California, National, and Maine using the AFINN lexicon that ranks words from -5 to +5.
+
+#### Maine
 
 ```{r}
-knitr::include_graphics("images/mean.png")
+ggplot(data = maine_count_rm_nonstop, aes(label=word)) +
+  geom_text_wordcloud(aes(color = n, size = n)) +
+  scale_size_area(max_size = 6) +
+  scale_color_gradient(low = "goldenrod4", high = "goldenrod1")
+
 ```
-**Figure 6.** The mean sentiment score for Green New Deal’s for California, National, and Maine using the AFINN lexicon that ranks words from -5 to +5 depending on the sentiment associated with each word.
+
+## Sentiments
+
+Now, let's look at the overall sentiments found in each document using the AFINN lexicon. The AFINN sentiment lexicon is a lit of terms that has been manually rated between -5 and +5 with negative scored indicating negative sentiments (anger, sadness, etc.) and positive scores indicating positive sentiments (joy, happy, etc.).
+
+Overall, we can see that Maine has far less words associated with negative sentiments (Figure 2). If we looked at the average sentiment score/value for each Green New Deal, we can see that overall Maine has the highest average sentiment score, followed by California (Figure 3). 
+
+
+```{r, message=FALSE, warning=FALSE}
+ca_clean <- ca_rm_nonstop %>% 
+  mutate(from = "California") %>% 
+  select("word", "from")
+
+fed_clean <- fed_rm_nonstop %>% 
+  mutate(from = "National") %>% 
+  select("word", "from")
+
+maine_fed <- maine_rm_nonstop %>% 
+  mutate(from = "Maine") %>% 
+  select("word", "from")
+
+all_gnd <- rbind(ca_clean, fed_clean, maine_fed)
+
+all_gnd_afinn <- all_gnd %>% 
+  inner_join(get_sentiments("afinn"))
+
+all_gnd_count <- all_gnd_afinn %>% 
+  count(from, value)
+
+ggplot(data = all_gnd_count, aes(x = from, y = n)) +
+  geom_col(aes(fill = value)) +
+  scale_fill_gradientn(colours = warmcool(100)) +
+  labs(x = "Green New Deal", y = "word count (n)", fill = "Sentiment Score") +
+  theme_minimal()
+```
+
+**Figure 2.** Overall sentiment of words found in the Green New Deals for California, National, and Maine using the AFINN lexicon that ranks words from -5 to +5.
+
+
+
+```{r, message=FALSE, warning=FALSE}
+## Now let's calculate the mean score
+## Check the mean values
+afinn_means <- all_gnd_afinn %>% 
+  group_by(from) %>% 
+  summarize(mean_afinn = mean(value))
+
+ggplot(data = afinn_means, aes(x = from, y = mean_afinn)) +
+  geom_col(aes(fill = from))+ 
+  scale_fill_manual(values=c("deepskyblue4","green4","goldenrod2")) +
+  labs(x = "Green New Deal", y = "average sentiment value") +
+  theme_minimal()+
+  theme(legend.position = "none")
+
+```
+
+**Figure 3.** The mean sentiment score for Green New Deal's for California, National, and Maine using the AFINN lexicon that ranks words from -5 to +5 depending on the sentiment associated with each word. 

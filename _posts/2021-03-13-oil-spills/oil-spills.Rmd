@@ -1,0 +1,124 @@
+---
+title: "Oil Spills"
+description: |
+  Working with spatial data to create a map of California oil spills
+author:
+  - name: Rachel Rhodes
+    url: {}
+date: 2021-03-13
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+```{r setup, include=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+library(janitor)
+library(sf)
+library(tmap)
+library(gstat)
+library(stars)
+library(pals)
+library(lubridate)
+```
+
+# California oil spills {.tabset}
+An exploration of oil spill response in California using data from the Office of Spill Prevention and Response (OSPR) Incident Tracking Database. This database is a statewide oil spill tracking information system that tracks a discharge or threatened discharge of petroleum or other deleterious material into the waters of the state."
+
+**Citation:** Oil Spill Incident Tracking 2008 edition, California Department of Fish and Game, Office of Spill Prevention and Response, July 23, 2009. [https://map.dfg.ca.gov/metadata/ds0394.html](https://map.dfg.ca.gov/metadata/ds0394.html)  
+
+## Overview of Data
+
+#### Data cleanup & prep
+
+The data is collected by OSPR Field Response Team members all over the state and includes soil spills in different environments including marine, fresh water, and on land. The following map explores the total spill incidents recorded for 2008 across the entire state. 
+
+
+```{r, warning=FALSE, message=FALSE}
+## read in CA DFW Oil Spill Incident Tracking
+ca_oil <- read_sf("oil_spills",
+                  layer = "Oil_Spill_Incident_Tracking_%5Bds394%5D") %>% 
+  clean_names()
+
+# st_crs(ca_oil)
+# plot(ca_oil)
+
+## Create data frame to quickly see the info stored inside SF 
+ca_oil_df <- ca_oil %>% 
+  as.data.frame()
+
+## read in CA County Data
+ca_counties <- read_sf("ca_counties", 
+                       layer = "CA_Counties_TIGER2016") %>% 
+  clean_names() %>% 
+  select(name, aland)
+
+## check crs to make sure it matches
+# st_crs(ca_counties)
+
+## create df to check
+ca_counties_df <- ca_counties %>% 
+  as.data.frame()
+
+# plot(ca_counties)
+
+## set tmap mode
+tmap_mode("view")
+```
+
+#### Data Visualization
+```{r}
+## create interactive map
+tm_shape(ca_oil) +
+  tm_dots("specificlo", 
+          size = 0.04,
+          palette=c("cadetblue2", "chartreuse3", "cornflowerblue"))
+```
+
+
+
+**Figure 1.** Oil spill incidents in California in 2008 by type of environment, includes fresh water, marine, and land.
+
+
+## Analysis: Inland Spills in 2008
+
+#### Data cleanup & prep
+
+The data includes which county each spill occurs in. The following explores the number of inland spills by county to see if there are any counties that have an especially high number of incidents. Figure 1 highlights that Los Angeles county had the highest number of incidents (340) in 2008 followed by San Mateo county (173).
+
+
+```{r}
+## Filter data to only include inland spills
+ca_oil_2008 <- ca_oil %>% 
+  mutate(date = ymd(dateofinci)) %>% 
+  mutate(year = year(date)) %>% 
+  filter(inlandmari == "Inland") %>% 
+  count(localecoun) %>% 
+  rename(name = localecoun) %>% 
+  rename(num_spills = n)
+
+## create data frame to easily look at the data and verify
+ca_oil_2008_df <- ca_oil_2008 %>% 
+  as.data.frame()
+
+## lets join the two layers together
+oil_2008_counties <- ca_counties %>% 
+  st_join(ca_oil_2008)
+
+oil_2008_counties_df <- oil_2008_counties %>% 
+  as.data.frame()
+```
+
+#### Data Visualization
+```{r}
+ggplot(data = oil_2008_counties)+
+  geom_sf(aes(fill = num_spills), color = "white", size = 0.1) +
+  scale_fill_gradientn(colors= c("azure3", "cadetblue4","darkcyan", "cyan3"), na.value = "lavenderblush2") +
+  theme_minimal() +
+  labs (fill = "Number of oil spill incidents")
+```
+
+
+**Figure 2.** The number of oil spill incidents by county in California in 2008 with the highest number of incidents shown in bright blue occurring in Los Angeles county. 

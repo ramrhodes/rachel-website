@@ -11,48 +11,100 @@ output:
     self_contained: false
 ---
 
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+```{r setup, include=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(raster)
+library(tidyverse)
+library(janitor)
+library(sf)
+library(fasterize)
+library(here)
+library(rnaturalearth)
+library(ggspatial) 
+library(rgeos)
 ```
 
 There are over 35 different species of cetaceans found in the Southern California Bight, an area that includes coastal Southern California and the Channel Islands. Some of the species found here include humpback whales, blue whales, common dolphin, Pacific white-sided dolphin and many more. The following explores cetaceans species richness in the area using a species distribution maps created by AquaMaps. These species distribution maps were modeled using large sets of occurrence data from GBIF and OBIS combined with estimates of environmental preferences including depth, water temperature, salinity, and primary productivity. 
 
-```{r}
-knitr::include_graphics("images/ocs_cetacean_drawings.jpg")
-```
-Image from Ocean Conservation Society
+![Photo: Ocean Conservation Society](ocs_cetacean_drawings.jpg)
 
-The data from this analysis uses species distribtuion maps that have already been clipped to the extent of the Southern California Bight. 
+*Data Citation: Kaschner,K., Rius-Barile, J., Kesner-Reyes, K., Garilao, C., Kullander, S., Rees, T., & Froese, R. (2016). AquaMaps: Predicted range maps for aquatic species. www.aquamaps.org*
 
+---
 
-**Raw Data:** Kaschner,K., Rius-Barile, J., Kesner-Reyes, K., Garilao, C., Kullander, S., Rees, T., & Froese, R. (2016). AquaMaps: Predicted range maps for aquatic species. www.aquamaps.org
+## Analysis 
 
-To create a species richness map of all 35 species found in the Southern California Bight, I first had to create a raster stack of all the species distributions:
+Step 1: Create Raster Stack of 35 cetacean species
 
 ```{r}
-knitr::include_graphics("images/species_stack.png")
-```
-Figure 1. Raster stack of all 35 species distribtuion from AquaMaps. 
+## first create a path to the folder and read in all teh files
+aquamaps_path <- "ca_cetaceans"
+all_files <- list.files(aquamaps_path, full.names = TRUE)
 
-Next, I reclassified these rasters to be binary precense/absence data using a threshold of probabilities of 0.6 or greater considered "present".
+## read in all the tif files in using lapply()
+species_raster <- lapply(all_files, raster)
+
+## now that we have all thes species raster, lets create a stack and plot them
+species_stack <- stack(species_raster)
+
+## let's see what the data looks like
+species_stack_df <- species_stack %>% 
+  as.data.frame()
+
+## Let's double check our crs to make sure it matched the project area
+# projection(species_stack)
+
+plot(species_stack)
+```
+
+Step 2: Reclassify species distribution as presence/absence data
 
 ```{r}
-knitr::include_graphics("images/binary.png")
+## reclassify the species distribution to presence/absence data using a threshold of 0.6
+species_richness <- reclassify(species_stack, c(-Inf,0.59, 0, 0.59, Inf, 1))
+
+species_richness_df <- species_richness %>% 
+  as.data.frame()
+
+plot(species_richness)
 ```
-Figure 2. Raster stack of all 35 species distribution from AquaMaps reclassified as presence or absence data. The distribution shown in yellow indicates that species is not found within the Southern California Bight.  
 
 
-Then, I combined these all into one raster using the sum function:
+Step 3: Combine to create a species richness layer
 
 ```{r}
-knitr::include_graphics("images/sum.png")
-```
-Figure 3. Raster of species richness (species count) in the Southern California Bight with the highest number of species shown in green and the lowest shown in pink and white. 
+## now lets sum all the cells to get a count of how many species are in each cell
+species_richness_sum <- calc(species_richness, fun = sum, na.rm = TRUE) 
 
-Lastly, I mapped this to look a little better using 'naturalearths' package to load a shape file of the California coast:
+## plot to see what that looks like
+plot(species_richness_sum)
+
+```
+
+Step 4: Create a map of the results
 
 ```{r}
-knitr::include_graphics("images/map.png")
+## load in a basemap to use from rnatrualearth package
+base_map <- ne_countries(country = 'united states of america', returnclass = 'sf')
+
+## change the raster to a data frame to plot on a ggplot
+richness_point_df <- raster::rasterToPoints(species_richness_sum) %>% 
+  as.data.frame()
+
+ggplot()+
+  geom_raster(data = richness_point_df, aes(x = x, y = y, fill = layer))+
+  geom_sf(data = base_map)+
+  coord_sf(xlim=c(-125,-115), ylim=c(32,38), expand = 0) +
+  scale_fill_gradient(low = 'white', high = 'steelblue4')+
+  annotation_scale(location = "br") +
+  annotation_north_arrow(location = "bl", which_north = "grid", 
+                             style = north_arrow_fancy_orienteering) +
+  annotation_spatial_hline()+
+  labs(title = "Cetaceans species richness in the California Bight", 
+       fill = "Species Count") +
+  theme_void() +
+  theme(legend.position = c(0.8,0.65)) 
+
 ```
-Figure 4. Species richness of 35 cetaceans species in the Southern California Bight using probability of occurrence from AquaMaps with any probability of 0.6 and higher as presence data.
+
+**Figure 1.** Species richness of 35 cetaceans species in the Southern California Bight using probability of occurrence from AquaMaps with any probability of 0.6 and higher as presence data.

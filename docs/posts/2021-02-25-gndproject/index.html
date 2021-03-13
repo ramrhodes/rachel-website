@@ -117,7 +117,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["gndproject_files/anchor-4.2.2/anchor.min.js","gndproject_files/bowser-1.9.3/bowser.min.js","gndproject_files/distill-2.2.21/template.v2.js","gndproject_files/jquery-1.11.3/jquery.min.js","gndproject_files/popper-2.6.0/popper.min.js","gndproject_files/tippy-6.2.7/tippy-bundle.umd.min.js","gndproject_files/tippy-6.2.7/tippy-light-border.css","gndproject_files/tippy-6.2.7/tippy.css","gndproject_files/tippy-6.2.7/tippy.umd.min.js","gndproject_files/webcomponents-2.0.0/webcomponents.js","images/california.png","images/gnd_word.png","images/maine.png","images/mean.png","images/national.png","images/sentiment.png"]}
+  {"type":"character","attributes":{},"value":["ca_gnd_original.pdf","ca_green.pdf","federal_green.pdf","gnd.jpg","gndproject_files/anchor-4.2.2/anchor.min.js","gndproject_files/bowser-1.9.3/bowser.min.js","gndproject_files/distill-2.2.21/template.v2.js","gndproject_files/figure-html5/unnamed-chunk-1-1.png","gndproject_files/figure-html5/unnamed-chunk-3-1.png","gndproject_files/figure-html5/unnamed-chunk-4-1.png","gndproject_files/figure-html5/unnamed-chunk-5-1.png","gndproject_files/figure-html5/unnamed-chunk-6-1.png","gndproject_files/figure-html5/unnamed-chunk-7-1.png","gndproject_files/jquery-1.11.3/jquery.min.js","gndproject_files/popper-2.6.0/popper.min.js","gndproject_files/tippy-6.2.7/tippy-bundle.umd.min.js","gndproject_files/tippy-6.2.7/tippy-light-border.css","gndproject_files/tippy-6.2.7/tippy.css","gndproject_files/tippy-6.2.7/tippy.umd.min.js","gndproject_files/webcomponents-2.0.0/webcomponents.js","images/california.png","images/gnd_word.png","images/maine.png","images/mean.png","images/national.png","images/sentiment.png","main_green.pdf"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
 <meta name="distill:offset" content="../.."/>
@@ -2411,48 +2411,231 @@ d-appendix d-footnote-list a.footnote-backlink {
 </div>
 
 <div class="d-article">
+<h1 id="green-new-deal-overview" class="tabset">Green New Deal Overview</h1>
 <p>The Green New Deal (GND) is a congressional resolution that focuses on addressing climate change and economic inequality by building a green economy, inclusive of all people, through a fair and just transition. Since the Green New Deal was introduced by Representative Alexandria Ocasio-Cortez of New York and Senator Edward J. Markey of Massachusetts, state and local governments have created their own New Deal policies. The following analysis explores of the most frequently used words in various Green New Deals, comparing the federal resolution with state-level Green New Deals from California and Maine.</p>
-<h4 id="links-to-original-text">Links to original text</h4>
-<p><strong>National GND:</strong> The federal Green New Deal is a 14 page document from February 7, 2019. The original document can be found <a href="https://www.congress.gov/116/bills/hres109/BILLS-116hres109ih.pdf">here</a></p>
-<p><strong>California GND:</strong> The California Green New, Assembly Bill 1839, was a 9 page document proposed on January 6, 2020. However, in response to the pandemic the bill was amended in May and lawmakers turned the bill into a California COVID-19 Recovery Deal. This analysis will compare the Green New Deal bill prior to the amendments. The bill can be found <a href="https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=201920200AB1839">here</a></p>
-<p><strong>Maine GND:</strong> The Maine Green New Deal is a 6 page document enacted June 17, 2019. The original document can be found <a href="http://legislature.maine.gov/legis/bills/bills_129th/billtexts/HP092401.asp">here</a></p>
-<hr />
+<figure>
+<img src="gnd.jpg" alt="" /><figcaption>Photo Credit: New York Times</figcaption>
+</figure>
+<h2 id="word-count">Word Count</h2>
 <p>First, lets compare how robust and lengthy each document is by comparing the overall word count.</p>
 <p>Some quick takeaways from Figure 1:</p>
-<p>The Federal legislation has the largest word count Maine legislation has far less words in their GND than California and the National GND</p>
+<ul>
+<li>The Federal legislation has the largest word count</li>
+<li>Maine legislation has far less words in their GND than California and the National GND</li>
+</ul>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="images/gnd_word.png" width="378" /></p>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='co'>### Step 1. Read in and clean up federal data set</span>
+<span class='va'>federal_deal</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://docs.ropensci.org/pdftools/reference/pdftools.html'>pdf_text</a></span><span class='op'>(</span><span class='st'>"federal_green.pdf"</span><span class='op'>)</span>
+
+<span class='co'># Next lets unnest and get each work into its own row</span>
+<span class='va'>federal_tidy</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span><span class='va'>federal_deal</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>mutate</span><span class='op'>(</span>text_full <span class='op'>=</span> <span class='fu'>str_split</span><span class='op'>(</span><span class='va'>federal_deal</span>, pattern <span class='op'>=</span> <span class='st'>"\\n"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>unnest</span><span class='op'>(</span><span class='va'>text_full</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>mutate</span><span class='op'>(</span>text_full <span class='op'>=</span> <span class='fu'>str_trim</span><span class='op'>(</span><span class='va'>text_full</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'><a href='https://rdrr.io/pkg/tidytext/man/unnest_tokens.html'>unnest_tokens</a></span><span class='op'>(</span><span class='va'>word</span>, <span class='va'>text_full</span><span class='op'>)</span>
+
+<span class='co'>### Step 2. Read in and cleanup data from California:</span>
+<span class='va'>ca_deal</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://docs.ropensci.org/pdftools/reference/pdftools.html'>pdf_text</a></span><span class='op'>(</span><span class='st'>"ca_gnd_original.pdf"</span><span class='op'>)</span>
+
+<span class='co'># Next lets unnest and get each work into its own row</span>
+<span class='va'>ca_tidy</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span><span class='va'>ca_deal</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>mutate</span><span class='op'>(</span>text_full <span class='op'>=</span> <span class='fu'>str_split</span><span class='op'>(</span><span class='va'>ca_deal</span>, pattern <span class='op'>=</span> <span class='st'>"\\n"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>unnest</span><span class='op'>(</span><span class='va'>text_full</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>mutate</span><span class='op'>(</span>text_full <span class='op'>=</span> <span class='fu'>str_trim</span><span class='op'>(</span><span class='va'>text_full</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'><a href='https://rdrr.io/pkg/tidytext/man/unnest_tokens.html'>unnest_tokens</a></span><span class='op'>(</span><span class='va'>word</span>, <span class='va'>text_full</span><span class='op'>)</span>
+
+<span class='co'>### Step 3. Read in and cleanup data from Maine:</span>
+<span class='va'>maine_deal</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://docs.ropensci.org/pdftools/reference/pdftools.html'>pdf_text</a></span><span class='op'>(</span><span class='st'>"main_green.pdf"</span><span class='op'>)</span>
+
+<span class='co'># Next lets unnest and get each work into its own row</span>
+<span class='va'>maine_tidy</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span><span class='va'>maine_deal</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>mutate</span><span class='op'>(</span>text_full <span class='op'>=</span> <span class='fu'>str_split</span><span class='op'>(</span><span class='va'>maine_deal</span>, pattern <span class='op'>=</span> <span class='st'>"\\n"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>unnest</span><span class='op'>(</span><span class='va'>text_full</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>mutate</span><span class='op'>(</span>text_full <span class='op'>=</span> <span class='fu'>str_trim</span><span class='op'>(</span><span class='va'>text_full</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'><a href='https://rdrr.io/pkg/tidytext/man/unnest_tokens.html'>unnest_tokens</a></span><span class='op'>(</span><span class='va'>word</span>, <span class='va'>text_full</span><span class='op'>)</span>
+
+
+<span class='co'>### Step 4. Let's create a combined data frame of all three and plot it:</span>
+<span class='va'>ca_prep</span> <span class='op'>&lt;-</span> <span class='va'>ca_tidy</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>mutate</span><span class='op'>(</span>from <span class='op'>=</span> <span class='st'>"California"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>select</span><span class='op'>(</span><span class='st'>"word"</span>, <span class='st'>"from"</span><span class='op'>)</span>
+
+<span class='va'>fed_prep</span> <span class='op'>&lt;-</span> <span class='va'>federal_tidy</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>mutate</span><span class='op'>(</span>from <span class='op'>=</span> <span class='st'>"National"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>select</span><span class='op'>(</span><span class='st'>"word"</span>, <span class='st'>"from"</span><span class='op'>)</span>
+
+<span class='va'>maine_prep</span> <span class='op'>&lt;-</span> <span class='va'>maine_tidy</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>mutate</span><span class='op'>(</span>from <span class='op'>=</span> <span class='st'>"Maine"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>select</span><span class='op'>(</span><span class='st'>"word"</span>, <span class='st'>"from"</span><span class='op'>)</span>
+
+<span class='va'>all_words</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span><span class='op'>(</span><span class='va'>ca_prep</span>, <span class='va'>fed_prep</span>, <span class='va'>maine_prep</span><span class='op'>)</span>
+
+<span class='co'># get a word count grouping by type (California, Federal or Maine)</span>
+<span class='va'>all_count</span> <span class='op'>&lt;-</span> <span class='va'>all_words</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>count</span><span class='op'>(</span><span class='va'>from</span><span class='op'>)</span>
+
+<span class='co'># create a visualization</span>
+<span class='fu'>ggplot</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>all_count</span>, <span class='fu'>aes</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>from</span>, y <span class='op'>=</span> <span class='va'>n</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>geom_col</span><span class='op'>(</span>fill<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"deepskyblue4"</span>,<span class='st'>"green4"</span>,<span class='st'>"goldenrod2"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>labs</span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"Green New Deal"</span>, y <span class='op'>=</span> <span class='st'>"total word count"</span>, title <span class='op'>=</span> <span class='st'>"Overall word count for Green New Deal legislation"</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>theme_minimal</span><span class='op'>(</span><span class='op'>)</span>
+</code></pre>
+</div>
+<p><img src="gndproject_files/figure-html5/unnamed-chunk-1-1.png" width="624" /></p>
 </div>
 <p><strong>Figure 1.</strong> Total word count for Green New Deal legislation for California, National, and Maine.</p>
+<h2 id="most-used-words">Most Used Words</h2>
 <p>Next, let’s compare the most used words in each document. To do this, we must remove the common and less interesting words like the, and, of, etc. for each document.</p>
+<p>To do this we must first remove stop words:</p>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="images/national.png" width="328" /></p>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='co'>### Step 1. Remove stop words  from Federal</span>
+
+<span class='co'># let's check our overall word count</span>
+<span class='va'>fed_deal_wordcount</span> <span class='op'>&lt;-</span> <span class='va'>federal_tidy</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>count</span><span class='op'>(</span><span class='va'>word</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>arrange</span><span class='op'>(</span><span class='op'>-</span><span class='va'>n</span><span class='op'>)</span>
+
+<span class='va'>fed_rm_nonstop</span> <span class='op'>&lt;-</span> <span class='va'>federal_tidy</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>anti_join</span><span class='op'>(</span><span class='va'>stop_words</span><span class='op'>)</span>
+
+<span class='va'>fed_count_rm_nonstop</span> <span class='op'>&lt;-</span> <span class='va'>fed_rm_nonstop</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>count</span><span class='op'>(</span><span class='va'>word</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>arrange</span><span class='op'>(</span><span class='op'>-</span><span class='va'>n</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>mutate</span><span class='op'>(</span>word_2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>word</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'><a href='https://rdrr.io/r/stats/filter.html'>filter</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>word_2</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>select</span><span class='op'>(</span><span class='va'>word</span>, <span class='va'>n</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>slice</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>50</span><span class='op'>)</span>
+
+
+<span class='co'>### Step 2. Remove stop words from California</span>
+
+<span class='co'># let's check our overall word count</span>
+<span class='va'>ca_deal_wordcount</span> <span class='op'>&lt;-</span> <span class='va'>ca_tidy</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>count</span><span class='op'>(</span><span class='va'>word</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>arrange</span><span class='op'>(</span><span class='op'>-</span><span class='va'>n</span><span class='op'>)</span>
+
+<span class='va'>ca_rm_nonstop</span> <span class='op'>&lt;-</span> <span class='va'>ca_tidy</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>anti_join</span><span class='op'>(</span><span class='va'>stop_words</span><span class='op'>)</span>
+
+<span class='va'>ca_count_rm_nonstop</span> <span class='op'>&lt;-</span> <span class='va'>ca_rm_nonstop</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>count</span><span class='op'>(</span><span class='va'>word</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>arrange</span><span class='op'>(</span><span class='op'>-</span><span class='va'>n</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>slice</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>50</span><span class='op'>)</span>
+
+
+<span class='co'>### Step 3. Remove stop words  from Maine</span>
+
+<span class='co'>#let's check our overall word count</span>
+<span class='va'>maine_deal_wordcount</span> <span class='op'>&lt;-</span> <span class='va'>maine_tidy</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>count</span><span class='op'>(</span><span class='va'>word</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>arrange</span><span class='op'>(</span><span class='op'>-</span><span class='va'>n</span><span class='op'>)</span>
+
+<span class='va'>maine_rm_nonstop</span> <span class='op'>&lt;-</span> <span class='va'>maine_tidy</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>anti_join</span><span class='op'>(</span><span class='va'>stop_words</span><span class='op'>)</span>
+
+<span class='va'>maine_count_rm_nonstop</span> <span class='op'>&lt;-</span> <span class='va'>maine_rm_nonstop</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>count</span><span class='op'>(</span><span class='va'>word</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>arrange</span><span class='op'>(</span><span class='op'>-</span><span class='va'>n</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>slice</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>50</span><span class='op'>)</span>
+</code></pre>
 </div>
-<p><strong>Figure 2.</strong> Wordcloud of the most used words in the National Green New Deal.</p>
-<div class="layout-chunk" data-layout="l-body">
-<p><img src="images/california.png" width="326" /></p>
 </div>
-<p><strong>Figure 3.</strong> Wordcloud of the most used words in the California Green New Deal.</p>
-<div class="layout-chunk" data-layout="l-body">
-<p><img src="images/maine.png" width="329" /></p>
-</div>
-<p><strong>Figure 4.</strong> Wordcloud of the most used words in the Maine Green New Deal.</p>
+<p>Then we can create wordclouds to explore the most used words. The most used word in each document are the brightest and largest words shown in the cloud.</p>
 <p>Some interesting takeaways:</p>
 <ul>
 <li>MaineGND uses more words like “construction”, “power”, “school”, “facility”</li>
 <li>California GND uses more words like “public”, “climate”, “green”</li>
 <li>The National GND uses more words like “bills”, “united”, “communities”</li>
 </ul>
+<h4 id="national">National</h4>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>ggplot</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>fed_count_rm_nonstop</span>, <span class='fu'>aes</span><span class='op'>(</span>label<span class='op'>=</span><span class='va'>word</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'><a href='https://lepennec.github.io/ggwordcloud/reference/geom_text_wordcloud.html'>geom_text_wordcloud</a></span><span class='op'>(</span><span class='fu'>aes</span><span class='op'>(</span>color <span class='op'>=</span> <span class='va'>n</span>, size <span class='op'>=</span> <span class='va'>n</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>scale_size_area</span><span class='op'>(</span>max_size <span class='op'>=</span> <span class='fl'>6</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>scale_color_gradient</span><span class='op'>(</span>low <span class='op'>=</span> <span class='st'>"green4"</span>, high <span class='op'>=</span> <span class='st'>"green1"</span><span class='op'>)</span>
+</code></pre>
+</div>
+<p><img src="gndproject_files/figure-html5/unnamed-chunk-3-1.png" width="624" /></p>
+</div>
+<h4 id="california">California</h4>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>ggplot</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>ca_count_rm_nonstop</span>, <span class='fu'>aes</span><span class='op'>(</span>label<span class='op'>=</span><span class='va'>word</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'><a href='https://lepennec.github.io/ggwordcloud/reference/geom_text_wordcloud.html'>geom_text_wordcloud</a></span><span class='op'>(</span><span class='fu'>aes</span><span class='op'>(</span>color <span class='op'>=</span> <span class='va'>n</span>, size <span class='op'>=</span> <span class='va'>n</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>scale_size_area</span><span class='op'>(</span>max_size <span class='op'>=</span> <span class='fl'>6</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>scale_color_gradient</span><span class='op'>(</span>low <span class='op'>=</span> <span class='st'>"deepskyblue4"</span>, high <span class='op'>=</span> <span class='st'>"deepskyblue1"</span><span class='op'>)</span>
+</code></pre>
+</div>
+<p><img src="gndproject_files/figure-html5/unnamed-chunk-4-1.png" width="624" /></p>
+</div>
+<h4 id="maine">Maine</h4>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>ggplot</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>maine_count_rm_nonstop</span>, <span class='fu'>aes</span><span class='op'>(</span>label<span class='op'>=</span><span class='va'>word</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'><a href='https://lepennec.github.io/ggwordcloud/reference/geom_text_wordcloud.html'>geom_text_wordcloud</a></span><span class='op'>(</span><span class='fu'>aes</span><span class='op'>(</span>color <span class='op'>=</span> <span class='va'>n</span>, size <span class='op'>=</span> <span class='va'>n</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>scale_size_area</span><span class='op'>(</span>max_size <span class='op'>=</span> <span class='fl'>6</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>scale_color_gradient</span><span class='op'>(</span>low <span class='op'>=</span> <span class='st'>"goldenrod4"</span>, high <span class='op'>=</span> <span class='st'>"goldenrod1"</span><span class='op'>)</span>
+</code></pre>
+</div>
+<p><img src="gndproject_files/figure-html5/unnamed-chunk-5-1.png" width="624" /></p>
+</div>
+<h2 id="sentiments">Sentiments</h2>
 <p>Now, let’s look at the overall sentiments found in each document using the AFINN lexicon. The AFINN sentiment lexicon is a lit of terms that has been manually rated between -5 and +5 with negative scored indicating negative sentiments (anger, sadness, etc.) and positive scores indicating positive sentiments (joy, happy, etc.).</p>
-<p>Overall, we can see that Maine has far less words associated with negative sentiments (Figure 5). If we looked at the average sentiment score/value for each Green New Deal, we can see that overall Maine has the highest average sentiment score, followed by California (Figure 6).</p>
+<p>Overall, we can see that Maine has far less words associated with negative sentiments (Figure 2). If we looked at the average sentiment score/value for each Green New Deal, we can see that overall Maine has the highest average sentiment score, followed by California (Figure 3).</p>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="images/sentiment.png" width="378" /></p>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>ca_clean</span> <span class='op'>&lt;-</span> <span class='va'>ca_rm_nonstop</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>mutate</span><span class='op'>(</span>from <span class='op'>=</span> <span class='st'>"California"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>select</span><span class='op'>(</span><span class='st'>"word"</span>, <span class='st'>"from"</span><span class='op'>)</span>
+
+<span class='va'>fed_clean</span> <span class='op'>&lt;-</span> <span class='va'>fed_rm_nonstop</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>mutate</span><span class='op'>(</span>from <span class='op'>=</span> <span class='st'>"National"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>select</span><span class='op'>(</span><span class='st'>"word"</span>, <span class='st'>"from"</span><span class='op'>)</span>
+
+<span class='va'>maine_fed</span> <span class='op'>&lt;-</span> <span class='va'>maine_rm_nonstop</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>mutate</span><span class='op'>(</span>from <span class='op'>=</span> <span class='st'>"Maine"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>select</span><span class='op'>(</span><span class='st'>"word"</span>, <span class='st'>"from"</span><span class='op'>)</span>
+
+<span class='va'>all_gnd</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span><span class='op'>(</span><span class='va'>ca_clean</span>, <span class='va'>fed_clean</span>, <span class='va'>maine_fed</span><span class='op'>)</span>
+
+<span class='va'>all_gnd_afinn</span> <span class='op'>&lt;-</span> <span class='va'>all_gnd</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>inner_join</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/tidytext/man/get_sentiments.html'>get_sentiments</a></span><span class='op'>(</span><span class='st'>"afinn"</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='va'>all_gnd_count</span> <span class='op'>&lt;-</span> <span class='va'>all_gnd_afinn</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>count</span><span class='op'>(</span><span class='va'>from</span>, <span class='va'>value</span><span class='op'>)</span>
+
+<span class='fu'>ggplot</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>all_gnd_count</span>, <span class='fu'>aes</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>from</span>, y <span class='op'>=</span> <span class='va'>n</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>geom_col</span><span class='op'>(</span><span class='fu'>aes</span><span class='op'>(</span>fill <span class='op'>=</span> <span class='va'>value</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>scale_fill_gradientn</span><span class='op'>(</span>colours <span class='op'>=</span> <span class='fu'><a href='http://kwstat.github.io/pals/reference/continuous.html'>warmcool</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>labs</span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"Green New Deal"</span>, y <span class='op'>=</span> <span class='st'>"word count (n)"</span>, fill <span class='op'>=</span> <span class='st'>"Sentiment Score"</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>theme_minimal</span><span class='op'>(</span><span class='op'>)</span>
+</code></pre>
 </div>
-<p><strong>Figure 5.</strong> Overall sentiment of words found in the Green New Deals for California, National, and Maine using the AFINN lexicon that ranks words from -5 to +5.</p>
+<p><img src="gndproject_files/figure-html5/unnamed-chunk-6-1.png" width="624" /></p>
+</div>
+<p><strong>Figure 2.</strong> Overall sentiment of words found in the Green New Deals for California, National, and Maine using the AFINN lexicon that ranks words from -5 to +5.</p>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="images/mean.png" width="403" /></p>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='co'>## Now let's calculate the mean score</span>
+<span class='co'>## Check the mean values</span>
+<span class='va'>afinn_means</span> <span class='op'>&lt;-</span> <span class='va'>all_gnd_afinn</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>group_by</span><span class='op'>(</span><span class='va'>from</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>summarize</span><span class='op'>(</span>mean_afinn <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>value</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='fu'>ggplot</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>afinn_means</span>, <span class='fu'>aes</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>from</span>, y <span class='op'>=</span> <span class='va'>mean_afinn</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>geom_col</span><span class='op'>(</span><span class='fu'>aes</span><span class='op'>(</span>fill <span class='op'>=</span> <span class='va'>from</span><span class='op'>)</span><span class='op'>)</span><span class='op'>+</span> 
+  <span class='fu'>scale_fill_manual</span><span class='op'>(</span>values<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"deepskyblue4"</span>,<span class='st'>"green4"</span>,<span class='st'>"goldenrod2"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>labs</span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"Green New Deal"</span>, y <span class='op'>=</span> <span class='st'>"average sentiment value"</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>theme_minimal</span><span class='op'>(</span><span class='op'>)</span><span class='op'>+</span>
+  <span class='fu'>theme</span><span class='op'>(</span>legend.position <span class='op'>=</span> <span class='st'>"none"</span><span class='op'>)</span>
+</code></pre>
 </div>
-<p><strong>Figure 6.</strong> The mean sentiment score for Green New Deal’s for California, National, and Maine using the AFINN lexicon that ranks words from -5 to +5 depending on the sentiment associated with each word.</p>
+<p><img src="gndproject_files/figure-html5/unnamed-chunk-7-1.png" width="624" /></p>
+</div>
+<p><strong>Figure 3.</strong> The mean sentiment score for Green New Deal’s for California, National, and Maine using the AFINN lexicon that ranks words from -5 to +5 depending on the sentiment associated with each word.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
