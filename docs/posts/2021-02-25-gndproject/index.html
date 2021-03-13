@@ -2420,12 +2420,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 <img src="gnd.jpg" alt="" /><figcaption>Photo Credit: New York Times</figcaption>
 </figure>
 <h2 id="word-count">Word Count</h2>
-<p>First, lets compare how robust and lengthy each document is by comparing the overall word count.</p>
-<p>Some quick takeaways from Figure 1:</p>
-<ul>
-<li>The Federal legislation has the largest word count</li>
-<li>Maine legislation has far less words in their GND than California and the National GND</li>
-</ul>
+<p>First, lets compare how robust and lengthy each document is by comparing the overall word count of each Green New Deal (GND).</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='co'>### Step 1. Read in and clean up federal data set</span>
@@ -2488,8 +2483,13 @@ d-appendix d-footnote-list a.footnote-backlink {
 <p><img src="gndproject_files/figure-html5/unnamed-chunk-1-1.png" width="624" /></p>
 </div>
 <p><strong>Figure 1.</strong> Total word count for Green New Deal legislation for California, National, and Maine.</p>
+<p><strong>Some quick takeaways from Figure 1:</strong></p>
+<ul>
+<li>The Federal GND has the largest word count of all three GNDs</li>
+<li>Maine GND has far less words than California and the National deals.</li>
+</ul>
 <h2 id="most-used-words">Most Used Words</h2>
-<p>Next, let’s compare the most used words in each document. To do this, we must remove the common and less interesting words like the, and, of, etc. for each document.</p>
+<p>Next, let’s compare the most used words in each document. To do this, we must remove the common and less interesting words like <code>the</code>, <code>and</code>, <code>of</code>, etc. for each document.</p>
 <p>To do this we must first remove stop words:</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -2546,13 +2546,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 </div>
 </div>
 <p>Then we can create wordclouds to explore the most used words. The most used word in each document are the brightest and largest words shown in the cloud.</p>
-<p>Some interesting takeaways:</p>
-<ul>
-<li>MaineGND uses more words like “construction”, “power”, “school”, “facility”</li>
-<li>California GND uses more words like “public”, “climate”, “green”</li>
-<li>The National GND uses more words like “bills”, “united”, “communities”</li>
-</ul>
-<h4 id="national">National</h4>
+<h3 id="national">National</h3>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>ggplot</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>fed_count_rm_nonstop</span>, <span class='fu'>aes</span><span class='op'>(</span>label<span class='op'>=</span><span class='va'>word</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
@@ -2563,7 +2557,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 </div>
 <p><img src="gndproject_files/figure-html5/unnamed-chunk-3-1.png" width="624" /></p>
 </div>
-<h4 id="california">California</h4>
+<h3 id="california">California</h3>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>ggplot</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>ca_count_rm_nonstop</span>, <span class='fu'>aes</span><span class='op'>(</span>label<span class='op'>=</span><span class='va'>word</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
@@ -2574,7 +2568,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 </div>
 <p><img src="gndproject_files/figure-html5/unnamed-chunk-4-1.png" width="624" /></p>
 </div>
-<h4 id="maine">Maine</h4>
+<h3 id="maine">Maine</h3>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>ggplot</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>maine_count_rm_nonstop</span>, <span class='fu'>aes</span><span class='op'>(</span>label<span class='op'>=</span><span class='va'>word</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
@@ -2585,9 +2579,14 @@ d-appendix d-footnote-list a.footnote-backlink {
 </div>
 <p><img src="gndproject_files/figure-html5/unnamed-chunk-5-1.png" width="624" /></p>
 </div>
+<p><strong>Some interesting takeaways:</strong></p>
+<ul>
+<li>Maine GND uses more words like “construction”, “power”, “school”, “facility”</li>
+<li>California GND uses more words like “public”, “climate”, “green”</li>
+<li>The National GND uses more words like “bills”, “united”, “communities”</li>
+</ul>
 <h2 id="sentiments">Sentiments</h2>
 <p>Now, let’s look at the overall sentiments found in each document using the AFINN lexicon. The AFINN sentiment lexicon is a lit of terms that has been manually rated between -5 and +5 with negative scored indicating negative sentiments (anger, sadness, etc.) and positive scores indicating positive sentiments (joy, happy, etc.).</p>
-<p>Overall, we can see that Maine has far less words associated with negative sentiments (Figure 2). If we looked at the average sentiment score/value for each Green New Deal, we can see that overall Maine has the highest average sentiment score, followed by California (Figure 3).</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='va'>ca_clean</span> <span class='op'>&lt;-</span> <span class='va'>ca_rm_nonstop</span> <span class='op'>%&gt;%</span> 
@@ -2639,6 +2638,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 <p><img src="gndproject_files/figure-html5/unnamed-chunk-7-1.png" width="624" /></p>
 </div>
 <p><strong>Figure 3.</strong> The mean sentiment score for Green New Deal’s for California, National, and Maine using the AFINN lexicon that ranks words from -5 to +5 depending on the sentiment associated with each word.</p>
+<p>Overall, we can see that Maine has far less words associated with negative sentiments (Figure 2). If we looked at the average sentiment score/value for each Green New Deal, we can see that overall Maine has the highest average sentiment score, followed by California (Figure 3). Sounds like we should move to Maine?</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->

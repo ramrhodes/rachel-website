@@ -1,7 +1,7 @@
 ---
-title: "Binary Logistic Regeression"
+title: "Classifying Palmetto Species"
 description: |
-  Binarg logistic regression analysis of Palmetto Species
+  A binary logistic regeression nalysis of Palmetto Species
 author:
   - name: Rachel Rhodes
     url: {}

@@ -1,7 +1,7 @@
 ---
-title: "Cetaceans in the California Bight"
+title: "Cetaceans in the Southern California Bight"
 description: |
-  A brief analysis using species distribution models from Aquamaps.
+  A brief analysis using species distribution models from Aquamaps
 author:
   - name: Rachel Rhodes
     url: {}
@@ -27,17 +27,17 @@ library(ggspatial)
 library(rgeos)
 ```
 
-There are over 35 different species of cetaceans found in the Southern California Bight, an area that includes coastal Southern California and the Channel Islands. Some of the species found here include humpback whales, blue whales, common dolphin, Pacific white-sided dolphin and many more. The following explores cetaceans species richness in the area using a species distribution maps created by AquaMaps. These species distribution maps were modeled using large sets of occurrence data from GBIF and OBIS combined with estimates of environmental preferences including depth, water temperature, salinity, and primary productivity. 
+There are over 35 different species of cetaceans found in the Southern California Bight, an area that includes coastal Southern California and the Channel Islands. Some of the species found here include humpback whales, blue whales, common dolphin, Pacific white-sided dolphin and many more. The following explores cetaceans species richness in the area using a species distribution maps created by AquaMaps. These species distribution maps were modeled using large sets of occurrence data from Global Biodiversity Information Facility (GBIF) and Ocean Biodiversity Information System (OBIS) combined with estimates of environmental preferences including depth, water temperature, salinity, and primary productivity. 
 
-![Photo: Ocean Conservation Society](ocs_cetacean_drawings.jpg)
+![Some common cetaceans found in the Southern California Bight. Photo: Ocean Conservation Society](ocs_cetacean_drawings.jpg)
 
-*Data Citation: Kaschner,K., Rius-Barile, J., Kesner-Reyes, K., Garilao, C., Kullander, S., Rees, T., & Froese, R. (2016). AquaMaps: Predicted range maps for aquatic species. www.aquamaps.org*
+**Data Citation:** Kaschner,K., Rius-Barile, J., Kesner-Reyes, K., Garilao, C., Kullander, S., Rees, T., & Froese, R. (2016). AquaMaps: Predicted range maps for aquatic species. www.aquamaps.org
 
 ---
 
 ## Analysis 
 
-Step 1: Create Raster Stack of 35 cetacean species
+#### Step 1: Create Raster Stack of 35 cetacean species
 
 ```{r}
 ## first create a path to the folder and read in all teh files
@@ -60,7 +60,7 @@ species_stack_df <- species_stack %>%
 plot(species_stack)
 ```
 
-Step 2: Reclassify species distribution as presence/absence data
+#### Step 2: Reclassify species distribution as presence/absence data
 
 ```{r}
 ## reclassify the species distribution to presence/absence data using a threshold of 0.6
@@ -73,7 +73,7 @@ plot(species_richness)
 ```
 
 
-Step 3: Combine to create a species richness layer
+#### Step 3: Combine to create a species richness layer
 
 ```{r}
 ## now lets sum all the cells to get a count of how many species are in each cell
@@ -84,7 +84,7 @@ plot(species_richness_sum)
 
 ```
 
-Step 4: Create a map of the results
+#### Step 4: Create a map of the results
 
 ```{r}
 ## load in a basemap to use from rnatrualearth package
