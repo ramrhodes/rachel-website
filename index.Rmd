@@ -8,12 +8,12 @@ links:
     url: "https://github.com/ramrhodes"
   - label: Email
     url: "mailto:rachrhodes@.gmail.com"
-  - label: Photography Site
-    url: "https://www.rachel-rhodes.com"
+  - label: Photography Print Shop
+    url: "https://www.wildlifeprintshop.com/"
 output:
   postcards::jolla
 site: distill::distill_website
 ---
  
-Rachel was discovered floating on a mat of giant kelp in the Santa Barbara channel with no memory of how she got there or where she came from—the only things that were certain were her strong connection to the ocean, her desire to protect it, and a strict filter feeding diet of plankton. She is a trained environmental scientist, finishing her degree at UC Santa Barbara's Bren School of Environmental Science & Management.
+Rachel was discovered floating on a mat of giant kelp in the Santa Barbara channel with no memory of how she got there or where she came from—the only things that were certain were her strong connection to the ocean, her desire to protect it, and a strict filter feeding diet of plankton. She is a trained environmental scientist, finishing her degree at UC Santa Barbara's Bren School of Environmental Science & Management with a focus on coastal marine resource management and strategic environmental communication. In her free time, Rachel can be found out in the ocean with a camera in hand as she aims to capture the liminal, the in-between, the moving and porous boundary between earth, air, and water. 
 
