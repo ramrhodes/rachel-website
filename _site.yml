@@ -1,15 +1,15 @@
 name: "."
-title: "Rachel Rhodes"
+title: "RACHEL RHODES"
 description: |
   Rachel Rhodes
 output_dir: "docs"
 theme: postcards.css
 navbar:
   right:
-    - text: "Home"
+    - text: "HOME"
       href: index.html
-    - text: "About"
+    - text: "ABOUT"
       href: resume/resume.html
-    - text: "Blog"
+    - text: "PROJECTS"
       href: blog.html
 output: distill::distill_article
